@@ -1,4 +1,3 @@
-// app/src/main/java/com/stefware/myapplication/di/AppModule.kt
 package com.stefware.myapplication.di
 
 import android.app.Application
@@ -6,7 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.stefware.myapplication.data.api.ManageWiseApiService
 import com.stefware.myapplication.data.interceptor.AuthTokenInterceptor
-import com.stefware.myapplication.data.repository.UserStoryRepository
+import com.stefware.myapplication.data.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,7 +37,7 @@ object AppModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://localhost:8090/api/v1/") // Asegúrate de usar la URL correcta para tu API
+            .baseUrl("http://10.0.2.2:8090/api/v1/") // URL para el emulador de Android
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -56,7 +55,41 @@ object AppModule {
         return UserStoryRepository(apiService)
     }
 
-    // Proporciona otros repositorios según sea necesario
+    @Provides
+    @Singleton
+    fun provideSprintRepository(apiService: ManageWiseApiService): SprintRepository {
+        return SprintRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideIssueRepository(apiService: ManageWiseApiService): IssueRepository {
+        return IssueRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStatisticsRepository(apiService: ManageWiseApiService): StatisticsRepository {
+        return StatisticsRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMeetingRepository(apiService: ManageWiseApiService): MeetingRepository {
+        return MeetingRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(apiService: ManageWiseApiService): AuthRepository {
+        return AuthRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideIssuesRepository(issueRepository: IssueRepository): com.stefware.myapplication.ui.issues.IssueRepository {
+        return com.stefware.myapplication.ui.issues.IssueRepository(issueRepository)
+    }
 
     @Provides
     @Singleton

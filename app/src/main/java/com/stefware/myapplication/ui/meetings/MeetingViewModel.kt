@@ -4,31 +4,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stefware.myapplication.data.model.Meeting
+import com.stefware.myapplication.data.model.Recording
 import com.stefware.myapplication.data.repository.MeetingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-// Necesitas crear este modelo primero
-data class Meeting(
-    val id: Int = 0,
-    val title: String = "",
-    val date: String = "",
-    val time: String = "",
-    val link: String = "",
-    val host: Int = 0,
-    val members: List<Int> = emptyList(),
-    val accessCode: String = "",
-    val recording: Recording? = null
-)
-
-data class Recording(
-    val recordingLink: String = "",
-    val duration: String = "",
-    val publicAccess: Boolean = false
-)
 
 @HiltViewModel
 class MeetingViewModel @Inject constructor(
