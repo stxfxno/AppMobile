@@ -1,7 +1,11 @@
 // app/src/main/java/com/stefware/myapplication/di/AppModule.kt
 package com.stefware.myapplication.di
 
+import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import com.stefware.myapplication.data.api.ManageWiseApiService
+import com.stefware.myapplication.data.interceptor.AuthTokenInterceptor
 import com.stefware.myapplication.data.repository.UserStoryRepository
 import dagger.Module
 import dagger.Provides
@@ -19,13 +23,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(authTokenInterceptor: AuthTokenInterceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(authTokenInterceptor)
             .build()
     }
 
@@ -52,4 +57,16 @@ object AppModule {
     }
 
     // Proporciona otros repositorios según sea necesario
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(application: Application): SharedPreferences {
+        return application.getSharedPreferences("manage_wise_prefs", Context.MODE_PRIVATE)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthTokenInterceptor(sharedPreferences: SharedPreferences): AuthTokenInterceptor {
+        return AuthTokenInterceptor(sharedPreferences)
+    }
 }

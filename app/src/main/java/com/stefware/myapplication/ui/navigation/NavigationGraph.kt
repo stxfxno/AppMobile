@@ -10,6 +10,7 @@ import com.stefware.myapplication.ui.auth.SignInScreen
 import com.stefware.myapplication.ui.auth.SignUpScreen
 import com.stefware.myapplication.ui.backlog.BacklogItemsScreen
 import com.stefware.myapplication.ui.backlog.BacklogScreen
+import com.stefware.myapplication.ui.common.ManageWiseScaffold
 import com.stefware.myapplication.ui.issues.IssueDetailScreen
 import com.stefware.myapplication.ui.issues.IssuesScreen
 import com.stefware.myapplication.ui.meetings.MeetingManagementScreen
@@ -19,10 +20,11 @@ import com.stefware.myapplication.ui.statistics.TimelineScreen
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
-    NavHost(
-        navController = navController,
-        startDestination = "sign_in"
-    ) {
+    ManageWiseScaffold(navController = navController) {
+        NavHost(
+            navController = navController,
+            startDestination = "sign_in"
+        ) {
         // Authentication
         composable("sign_in") {
             SignInScreen(

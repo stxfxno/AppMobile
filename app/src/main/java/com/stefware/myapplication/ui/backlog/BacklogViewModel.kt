@@ -1,4 +1,3 @@
-// app/src/main/java/com/stefware/myapplication/ui/backlog/BacklogViewModel.kt
 package com.stefware.myapplication.ui.backlog
 
 import androidx.lifecycle.ViewModel
@@ -6,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.stefware.myapplication.data.model.Sprint
 import com.stefware.myapplication.data.model.SprintStatus
 import com.stefware.myapplication.data.model.UserStory
+import com.stefware.myapplication.data.repository.SprintRepository
 import com.stefware.myapplication.data.repository.UserStoryRepository
+import com.stefware.myapplication.ui.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,57 +19,101 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BacklogViewModel @Inject constructor(
-    private val userStoryRepository: UserStoryRepository
+    private val userStoryRepository: UserStoryRepository,
+    private val sprintRepository: SprintRepository
 ) : ViewModel() {
 
-    private val _userStories = MutableStateFlow<List<UserStory>>(emptyList())
-    val userStories: StateFlow<List<UserStory>> = _userStories
+    private val _userStories = MutableStateFlow<UiState<List<UserStory>>>(UiState.Loading)
+    val userStories: StateFlow<UiState<List<UserStory>>> = _userStories
 
-    private val _sprintBacklog = MutableStateFlow<List<UserStory>>(emptyList())
-    val sprintBacklog: StateFlow<List<UserStory>> = _sprintBacklog
+    private val _sprintBacklog = MutableStateFlow<UiState<List<UserStory>>>(UiState.Loading)
+    val sprintBacklog: StateFlow<UiState<List<UserStory>>> = _sprintBacklog
+
+    // Lista temporal para almacenar las user stories seleccionadas para el sprint backlog
+    private val sprintBacklogItems = mutableListOf<UserStory>()
 
     init {
         loadUserStories()
+        loadSprintBacklog()
     }
 
-    private fun loadUserStories() {
+    fun loadUserStories() {
         viewModelScope.launch {
+            _userStories.value = UiState.Loading
             try {
                 val stories = userStoryRepository.getUserStories()
-                _userStories.value = stories.filter { it.sprintId == null }
+                _userStories.value = UiState.Success(stories.filter { it.sprintId == null })
             } catch (e: Exception) {
-                // Manejar el error
+                _userStories.value = UiState.Error(e.message ?: "Failed to load user stories")
             }
         }
     }
 
+    fun loadSprintBacklog() {
+        // Inicialmente solo cargamos la lista local
+        _sprintBacklog.value = UiState.Success(sprintBacklogItems)
+    }
+
     fun addToSprintBacklog(userStory: UserStory) {
-        _userStories.value = _userStories.value.filter { it.id != userStory.id }
-        _sprintBacklog.value = _sprintBacklog.value + userStory
+        val currentState = _userStories.value
+        if (currentState is UiState.Success) {
+            val updatedStories = currentState.data.filter { it.id != userStory.id }
+            _userStories.value = UiState.Success(updatedStories)
+
+            sprintBacklogItems.add(userStory)
+            _sprintBacklog.value = UiState.Success(sprintBacklogItems.toList())
+        }
     }
 
     fun removeFromSprintBacklog(userStory: UserStory) {
-        _sprintBacklog.value = _sprintBacklog.value.filter { it.id != userStory.id }
-        _userStories.value = _userStories.value + userStory
+        val currentState = _sprintBacklog.value
+        if (currentState is UiState.Success) {
+            sprintBacklogItems.removeIf { it.id == userStory.id }
+            _sprintBacklog.value = UiState.Success(sprintBacklogItems.toList())
+
+            // Volver a agregar a la lista de product backlog
+            val productBacklogState = _userStories.value
+            if (productBacklogState is UiState.Success) {
+                val updatedStories = productBacklogState.data + userStory
+                _userStories.value = UiState.Success(updatedStories)
+            }
+        }
     }
 
-    fun createSprint() {
-        if (_sprintBacklog.value.isEmpty()) return
+    fun createSprint(title: String, goal: String, endDate: String) {
+        if (sprintBacklogItems.isEmpty()) return
 
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val sprint = Sprint(
-            id = 0, // El servidor asignará un ID
-            title = "Sprint ${System.currentTimeMillis()}", // Puedes cambiar esto por un título ingresado por el usuario
-            goal = "Complete ${_sprintBacklog.value.size} user stories",
-            status = SprintStatus.STARTED,
-            startDate = dateFormat.format(Date()),
-            endDate = dateFormat.format(Date(System.currentTimeMillis() + 14 * 24 * 60 * 60 * 1000)) // 2 semanas después
-        )
+        viewModelScope.launch {
+            try {
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val sprint = Sprint(
+                    id = 0,
+                    title = title,
+                    goal = goal,
+                    status = SprintStatus.STARTED,
+                    startDate = dateFormat.format(Date()),
+                    endDate = endDate
+                )
 
-        // Aquí deberías llamar a un método para crear el sprint en el servidor
-        // y luego actualizar las historias de usuario para asignarlas al sprint
+                // Crear sprint en el servidor
+                val createdSprint = sprintRepository.createSprint(sprint)
 
-        // Simulación de creación exitosa
-        _sprintBacklog.value = emptyList()
+                // Actualizar user stories para asignarlas al sprint
+                sprintBacklogItems.forEach { userStory ->
+                    val updatedUserStory = userStory.copy(sprintId = createdSprint.id)
+                    userStoryRepository.updateUserStory(userStory.id, updatedUserStory)
+                }
+
+                // Limpiar sprint backlog
+                sprintBacklogItems.clear()
+                _sprintBacklog.value = UiState.Success(emptyList())
+
+                // Recargar user stories
+                loadUserStories()
+
+            } catch (e: Exception) {
+                _sprintBacklog.value = UiState.Error(e.message ?: "Failed to create sprint")
+            }
+        }
     }
 }

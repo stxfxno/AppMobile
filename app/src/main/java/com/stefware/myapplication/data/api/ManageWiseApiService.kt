@@ -7,6 +7,7 @@ import com.stefware.myapplication.data.model.Sprint
 import com.stefware.myapplication.data.model.UserStory
 
 import com.stefware.myapplication.data.model.*
+import com.stefware.myapplication.ui.meetings.Meeting
 import retrofit2.http.*
 
 interface ManageWiseApiService {
@@ -48,4 +49,17 @@ interface ManageWiseApiService {
 
     @POST("authentication/sign-up")
     suspend fun signUp(@Body signUpRequest: SignUpRequest): SignUpResponse
+
+    // Meetings
+    @GET("meetings")
+    suspend fun getMeetings(): List<Meeting>
+
+    @POST("meetings")
+    suspend fun createMeeting(@Body meeting: Meeting): Meeting
+
+    @PUT("meetings/{id}")
+    suspend fun updateMeeting(@Path("id") id: Int, @Body meeting: Meeting): Meeting
+
+    @DELETE("meetings/{id}")
+    suspend fun deleteMeeting(@Path("id") id: Int)
 }
