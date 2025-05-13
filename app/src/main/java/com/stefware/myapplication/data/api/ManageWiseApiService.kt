@@ -5,9 +5,8 @@ import com.stefware.myapplication.data.model.Issue
 import com.stefware.myapplication.data.model.Member
 import com.stefware.myapplication.data.model.Sprint
 import com.stefware.myapplication.data.model.UserStory
-
+import com.stefware.myapplication.data.model.Meeting
 import com.stefware.myapplication.data.model.*
-import com.stefware.myapplication.ui.meetings.Meeting
 import retrofit2.http.*
 
 interface ManageWiseApiService {
@@ -62,4 +61,7 @@ interface ManageWiseApiService {
 
     @DELETE("meetings/{id}")
     suspend fun deleteMeeting(@Path("id") id: Int)
+
+
+
 }

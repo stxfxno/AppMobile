@@ -15,6 +15,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import com.stefware.myapplication.data.repository.IssueRepository
 
 @Module
 @InstallIn(SingletonComponent::class)

@@ -11,6 +11,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stefware.myapplication.data.model.History
 import com.stefware.myapplication.data.model.Issue
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.Icons
 
 @Composable
 fun IssueDetailScreen(
