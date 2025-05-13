@@ -15,13 +15,20 @@ fun IssueDialog(
     onDismiss: () -> Unit,
     onSave: (Issue) -> Unit
 ) {
-    val currentIssue = remember { mutableStateOf(issue ?: Issue()) }
+    val initialIssue = issue ?: Issue()
+    var title by remember { mutableStateOf(initialIssue.title) }
+    var description by remember { mutableStateOf(initialIssue.description) }
+    var sprintAssociate by remember { mutableStateOf(initialIssue.sprintAssociate) }
+    var priority by remember { mutableStateOf(initialIssue.priority) }
+    var assignedTo by remember { mutableStateOf(initialIssue.assignedTo) }
+    var expanded by remember { mutableStateOf(false) }
+    val priorities = listOf("Low", "Medium", "High")
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = if (currentIssue.value.id == 0) "Add New Issue" else "Edit Issue"
+                text = if (initialIssue.id == 0) "Add New Issue" else "Edit Issue"
             )
         },
         text = {
@@ -31,10 +38,8 @@ fun IssueDialog(
                     .padding(16.dp)
             ) {
                 TextField(
-                    value = currentIssue.value.title,
-                    onValueChange = {
-                        currentIssue.value = currentIssue.value.copy(title = it)
-                    },
+                    value = title,
+                    onValueChange = { title = it },
                     label = { Text("Title") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -42,10 +47,8 @@ fun IssueDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = currentIssue.value.description,
-                    onValueChange = {
-                        currentIssue.value = currentIssue.value.copy(description = it)
-                    },
+                    value = description,
+                    onValueChange = { description = it },
                     label = { Text("Description") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -53,10 +56,8 @@ fun IssueDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = currentIssue.value.sprintAssociate,
-                    onValueChange = {
-                        currentIssue.value = currentIssue.value.copy(sprintAssociate = it)
-                    },
+                    value = sprintAssociate,
+                    onValueChange = { sprintAssociate = it },
                     label = { Text("Sprint") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -65,29 +66,28 @@ fun IssueDialog(
 
                 // Dropdown para seleccionar prioridad
                 ExposedDropdownMenuBox(
-                    expanded = false,
-                    onExpandedChange = { },
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     TextField(
-                        value = currentIssue.value.priority,
-                        onValueChange = {
-                            currentIssue.value = currentIssue.value.copy(priority = it)
-                        },
+                        value = priority,
+                        onValueChange = { priority = it },
                         label = { Text("Priority") },
-                        modifier = Modifier.fillMaxWidth().menuAnchor()
+                        modifier = Modifier.menuAnchor().fillMaxWidth(),
+                        readOnly = true
                     )
 
-                    DropdownMenu(
-                        expanded = false,
-                        onDismissRequest = { },
-                        modifier = Modifier.exposedDropdownSize()
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
                     ) {
-                        listOf("Low", "Medium", "High").forEach { priority ->
+                        priorities.forEach { priorityOption ->
                             DropdownMenuItem(
-                                text = { Text(priority) },
+                                text = { Text(priorityOption) },
                                 onClick = {
-                                    currentIssue.value = currentIssue.value.copy(priority = priority)
+                                    priority = priorityOption
+                                    expanded = false
                                 }
                             )
                         }
@@ -97,10 +97,8 @@ fun IssueDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = currentIssue.value.assignedTo,
-                    onValueChange = {
-                        currentIssue.value = currentIssue.value.copy(assignedTo = it)
-                    },
+                    value = assignedTo,
+                    onValueChange = { assignedTo = it },
                     label = { Text("Assigned To") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -108,7 +106,21 @@ fun IssueDialog(
         },
         confirmButton = {
             Button(
-                onClick = { onSave(currentIssue.value) }
+                onClick = {
+                    val updatedIssue = initialIssue.copy(
+                        title = title,
+                        description = description,
+                        sprintAssociate = sprintAssociate,
+                        priority = priority,
+                        assignedTo = assignedTo,
+                        status = initialIssue.status.ifEmpty { "New" },
+                        madeBy = initialIssue.madeBy.ifEmpty { "Current User" },
+                        createdIn = initialIssue.createdIn.ifEmpty {
+                            java.time.LocalDate.now().toString()
+                        }
+                    )
+                    onSave(updatedIssue)
+                }
             ) {
                 Text("Save")
             }

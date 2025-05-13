@@ -1,3 +1,4 @@
+// app/src/main/java/com/stefware/myapplication/ui/backlog/UserStoryDialog.kt
 package com.stefware.myapplication.ui.backlog
 
 import androidx.compose.foundation.layout.*
@@ -14,8 +15,8 @@ fun UserStoryDialog(
     onDismiss: () -> Unit,
     onSave: (UserStory) -> Unit
 ) {
-    val currentUserStory = remember { mutableStateOf(userStory) }
-    val statusOptions = StoryStatus.values().map { it.name }
+    var title by remember { mutableStateOf(userStory.title) }
+    var description by remember { mutableStateOf(userStory.description) }
     var selectedStatus by remember { mutableStateOf(userStory.status.name) }
     var effortValue by remember { mutableStateOf(userStory.effort.toString()) }
 
@@ -27,8 +28,8 @@ fun UserStoryDialog(
         text = {
             Column(modifier = Modifier.padding(8.dp)) {
                 TextField(
-                    value = currentUserStory.value.title,
-                    onValueChange = { currentUserStory.value = currentUserStory.value.copy(title = it) },
+                    value = title,
+                    onValueChange = { title = it },
                     label = { Text("Title") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -36,8 +37,8 @@ fun UserStoryDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = currentUserStory.value.description,
-                    onValueChange = { currentUserStory.value = currentUserStory.value.copy(description = it) },
+                    value = description,
+                    onValueChange = { description = it },
                     label = { Text("Description") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -47,7 +48,7 @@ fun UserStoryDialog(
                 Text("Status")
                 Spacer(modifier = Modifier.height(4.dp))
 
-                statusOptions.forEach { status ->
+                StoryStatus.values().forEach { status ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -55,11 +56,11 @@ fun UserStoryDialog(
                         horizontalArrangement = Arrangement.Start
                     ) {
                         RadioButton(
-                            selected = selectedStatus == status,
-                            onClick = { selectedStatus = status }
+                            selected = selectedStatus == status.name,
+                            onClick = { selectedStatus = status.name }
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(status)
+                        Text(status.name)
                     }
                 }
 
@@ -84,7 +85,9 @@ fun UserStoryDialog(
                     val status = StoryStatus.valueOf(selectedStatus)
                     val effort = effortValue.toIntOrNull() ?: 0
 
-                    val updatedUserStory = currentUserStory.value.copy(
+                    val updatedUserStory = userStory.copy(
+                        title = title,
+                        description = description,
                         status = status,
                         effort = effort
                     )

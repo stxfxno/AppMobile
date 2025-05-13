@@ -1,3 +1,4 @@
+// app/src/main/java/com/stefware/myapplication/ui/meetings/MeetingDialog.kt
 package com.stefware.myapplication.ui.meetings
 
 import androidx.compose.foundation.layout.*
@@ -6,7 +7,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.stefware.myapplication.data.model.Meeting
-import com.stefware.myapplication.data.model.Recording
 
 @Composable
 fun MeetingDialog(
@@ -14,16 +14,22 @@ fun MeetingDialog(
     onDismiss: () -> Unit,
     onSave: (Meeting) -> Unit
 ) {
-    val currentMeeting = remember { mutableStateOf(meeting ?: Meeting()) }
+    val initialMeeting = meeting ?: Meeting()
+    var title by remember { mutableStateOf(initialMeeting.title) }
+    var date by remember { mutableStateOf(initialMeeting.date) }
+    var time by remember { mutableStateOf(initialMeeting.time) }
+    var link by remember { mutableStateOf(initialMeeting.link) }
+    var hostId by remember { mutableStateOf(initialMeeting.host.toString()) }
+    var accessCode by remember { mutableStateOf(initialMeeting.accessCode) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (currentMeeting.value.id == 0) "Add New Meeting" else "Edit Meeting") },
+        title = { Text(if (initialMeeting.id == 0) "Add New Meeting" else "Edit Meeting") },
         text = {
             Column {
                 TextField(
-                    value = currentMeeting.value.title,
-                    onValueChange = { currentMeeting.value = currentMeeting.value.copy(title = it) },
+                    value = title,
+                    onValueChange = { title = it },
                     label = { Text("Title") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -31,8 +37,8 @@ fun MeetingDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = currentMeeting.value.date,
-                    onValueChange = { currentMeeting.value = currentMeeting.value.copy(date = it) },
+                    value = date,
+                    onValueChange = { date = it },
                     label = { Text("Date (YYYY-MM-DD)") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -40,8 +46,8 @@ fun MeetingDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = currentMeeting.value.time,
-                    onValueChange = { currentMeeting.value = currentMeeting.value.copy(time = it) },
+                    value = time,
+                    onValueChange = { time = it },
                     label = { Text("Time (HH:MM)") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -49,8 +55,8 @@ fun MeetingDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = currentMeeting.value.link,
-                    onValueChange = { currentMeeting.value = currentMeeting.value.copy(link = it) },
+                    value = link,
+                    onValueChange = { link = it },
                     label = { Text("Meeting Link") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -58,13 +64,10 @@ fun MeetingDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = currentMeeting.value.host.toString(),
+                    value = hostId,
                     onValueChange = {
-                        try {
-                            val hostId = it.toIntOrNull() ?: 0
-                            currentMeeting.value = currentMeeting.value.copy(host = hostId)
-                        } catch (e: Exception) {
-                            // Ignorar conversion inválida
+                        if (it.isEmpty() || it.toIntOrNull() != null) {
+                            hostId = it
                         }
                     },
                     label = { Text("Host ID") },
@@ -74,15 +77,25 @@ fun MeetingDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = currentMeeting.value.accessCode,
-                    onValueChange = { currentMeeting.value = currentMeeting.value.copy(accessCode = it) },
+                    value = accessCode,
+                    onValueChange = { accessCode = it },
                     label = { Text("Access Code") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
         },
         confirmButton = {
-            Button(onClick = { onSave(currentMeeting.value) }) {
+            Button(onClick = {
+                val updatedMeeting = initialMeeting.copy(
+                    title = title,
+                    date = date,
+                    time = time,
+                    link = link,
+                    host = hostId.toIntOrNull() ?: 0,
+                    accessCode = accessCode
+                )
+                onSave(updatedMeeting)
+            }) {
                 Text("Save")
             }
         },
