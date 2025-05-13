@@ -1,7 +1,5 @@
 package com.stefware.myapplication.data.model
 
-import com.google.android.gms.gcm.Task
-
 data class UserStory(
     val id: Int = 0,
     val title: String = "",
