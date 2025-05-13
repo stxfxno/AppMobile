@@ -1,3 +1,4 @@
+// Archivo: app/src/main/java/com/stefware/myapplication/ui/statistics/StatisticsScreen.kt
 package com.stefware.myapplication.ui.statistics
 
 import androidx.compose.foundation.layout.*
@@ -11,8 +12,8 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.stefware.myapplication.ui.statics.SprintStatistics
-import com.stefware.myapplication.ui.statics.StatisticsViewModel
+import com.stefware.myapplication.ui.statistics.SprintStatistics
+import com.stefware.myapplication.ui.statistics.StatisticsViewModel
 
 @Composable
 fun StatisticsScreen(

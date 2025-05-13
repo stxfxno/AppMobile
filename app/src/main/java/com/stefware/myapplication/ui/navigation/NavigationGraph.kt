@@ -1,3 +1,4 @@
+// Archivo: app/src/main/java/com/stefware/myapplication/ui/navigation/NavigationGraph.kt
 package com.stefware.myapplication.ui.navigation
 
 import com.stefware.myapplication.ui.issues.IssuesScreen
@@ -25,73 +26,74 @@ fun NavigationGraph(navController: NavHostController) {
             navController = navController,
             startDestination = "sign_in"
         ) {
-        // Authentication
-        composable("sign_in") {
-            SignInScreen(
-                navigateToSignUp = { navController.navigate("sign_up") },
-                navigateToHome = { navController.navigate("backlog") {
-                    popUpTo("sign_in") { inclusive = true }
-                }}
-            )
-        }
+            // Authentication
+            composable("sign_in") {
+                SignInScreen(
+                    navigateToSignUp = { navController.navigate("sign_up") },
+                    navigateToHome = { navController.navigate("backlog") {
+                        popUpTo("sign_in") { inclusive = true }
+                    }}
+                )
+            }
 
-        composable("sign_up") {
-            SignUpScreen(
-                navigateToSignIn = { navController.popBackStack() }
-            )
-        }
+            composable("sign_up") {
+                SignUpScreen(
+                    navigateToSignIn = { navController.popBackStack() }
+                )
+            }
 
-        // Backlog
-        composable("backlog") {
-            BacklogScreen(
-                navigateToBacklogItems = { navController.navigate("backlog_items") }
-            )
-        }
+            // Backlog
+            composable("backlog") {
+                BacklogScreen(
+                    navigateToBacklogItems = { navController.navigate("backlog_items") }
+                )
+            }
 
-        composable("backlog_items") {
-            BacklogItemsScreen(
-                navigateToBacklog = { navController.popBackStack() }
-            )
-        }
+            composable("backlog_items") {
+                BacklogItemsScreen(
+                    navigateToBacklog = { navController.popBackStack() }
+                )
+            }
 
-        // Issues
-        composable("issues") {
-            IssuesScreen(
-                navigateToIssueDetail = { issueId ->
-                    navController.navigate("issue_detail/$issueId")
-                }
-            )
-        }
+            // Issues
+            composable("issues") {
+                IssuesScreen(
+                    navigateToIssueDetail = { issueId ->
+                        navController.navigate("issue_detail/$issueId")
+                    }
+                )
+            }
 
-        composable("issue_detail/{issueId}") { backStackEntry ->
-            val issueId = backStackEntry.arguments?.getString("issueId")?.toIntOrNull() ?: 0
-            IssueDetailScreen(
-                issueId = issueId,
-                navigateBack = { navController.popBackStack() }
-            )
-        }
+            composable("issue_detail/{issueId}") { backStackEntry ->
+                val issueId = backStackEntry.arguments?.getString("issueId")?.toIntOrNull() ?: 0
+                IssueDetailScreen(
+                    issueId = issueId,
+                    navigateBack = { navController.popBackStack() }
+                )
+            }
 
-        // Members
-        composable("members") {
-            MemberManagementScreen()
-        }
+            // Members
+            composable("members") {
+                MemberManagementScreen()
+            }
 
-        // Meetings
-        composable("meetings") {
-            MeetingManagementScreen()
-        }
+            // Meetings
+            composable("meetings") {
+                MeetingManagementScreen()
+            }
 
-        // Statistics
-        composable("statistics") {
-            StatisticsScreen(
-                navigateToTimeline = { navController.navigate("timeline") }
-            )
-        }
+            // Statistics
+            composable("statistics") {
+                StatisticsScreen(
+                    navigateToTimeline = { navController.navigate("timeline") }
+                )
+            }
 
-        composable("timeline") {
-            TimelineScreen(
-                navigateBack = { navController.popBackStack() }
-            )
+            composable("timeline") {
+                TimelineScreen(
+                    navigateBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }

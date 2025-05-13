@@ -1,4 +1,5 @@
-package com.stefware.myapplication.ui.statics
+// Archivo: app/src/main/java/com/stefware/myapplication/ui/statistics/StatisticsViewModel.kt
+package com.stefware.myapplication.ui.statistics
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

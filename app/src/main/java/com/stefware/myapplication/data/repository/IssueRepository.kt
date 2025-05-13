@@ -1,28 +1,30 @@
-// app/src/main/java/com/stefware/myapplication/data/repository/IssueRepository.kt
-package com.stefware.myapplication.data.repository
+// Archivo: app/src/main/java/com/stefware/myapplication/ui/issues/IssueRepository.kt
+package com.stefware.myapplication.ui.issues
 
-import com.stefware.myapplication.data.api.ManageWiseApiService
 import com.stefware.myapplication.data.model.Issue
+import com.stefware.myapplication.data.repository.IssueRepository as DataIssueRepository
 import javax.inject.Inject
 
+/**
+ * Esta clase actúa como un adaptador entre el ViewModel y el repositorio de datos real.
+ * Permite separar la lógica de presentación de la lógica de acceso a datos.
+ */
 class IssueRepository @Inject constructor(
-    private val apiService: ManageWiseApiService
+    private val dataRepository: DataIssueRepository
 ) {
     suspend fun getIssues(): List<Issue> {
-        return apiService.getIssues()
+        return dataRepository.getIssues()
     }
 
     suspend fun createIssue(issue: Issue): Issue {
-        // Implementación pendiente en la API
-        return issue // Simulación
+        return dataRepository.createIssue(issue)
     }
 
     suspend fun updateIssue(id: Int, issue: Issue): Issue {
-        // Implementación pendiente en la API
-        return issue // Simulación
+        return dataRepository.updateIssue(id, issue)
     }
 
     suspend fun deleteIssue(id: Int) {
-        // Implementación pendiente en la API
+        dataRepository.deleteIssue(id)
     }
 }
