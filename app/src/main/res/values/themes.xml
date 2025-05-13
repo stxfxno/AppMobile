@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Tema base para la aplicación -->
+    <style name="Theme.MyApplication" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Se mantiene por compatibilidad -->
+    </style>
 
-    <style name="Theme.MyApplication" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Nuevos temas de ManageWise -->
+    <style name="Theme.ManageWise" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/orange_primary</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="Theme.ManageWise.Dark" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@color/orange_primary</item>
+        <item name="android:windowBackground">@color/dark_background</item>
+    </style>
 </resources>
