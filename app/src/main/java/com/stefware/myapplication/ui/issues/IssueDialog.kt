@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.stefware.myapplication.data.model.Issue
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IssueDialog(
     issue: Issue?,

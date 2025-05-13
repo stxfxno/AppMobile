@@ -5,7 +5,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.stefware.myapplication.data.api.ManageWiseApiService
 import com.stefware.myapplication.data.interceptor.AuthTokenInterceptor
-import com.stefware.myapplication.data.repository.*
+import com.stefware.myapplication.data.repository.AuthRepository
+import com.stefware.myapplication.data.repository.MeetingRepository
+import com.stefware.myapplication.data.repository.SprintRepository
+import com.stefware.myapplication.data.repository.StatisticsRepository
+import com.stefware.myapplication.data.repository.UserStoryRepository
+import com.stefware.myapplication.data.repository.IssueRepository as DataIssueRepository
+import com.stefware.myapplication.ui.issues.IssueRepository as UiIssueRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +21,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
-import com.stefware.myapplication.data.repository.IssueRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -64,8 +69,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideIssueRepository(apiService: ManageWiseApiService): IssueRepository {
-        return IssueRepository(apiService)
+    fun provideIssueRepository(apiService: ManageWiseApiService): DataIssueRepository {
+        return DataIssueRepository(apiService)
     }
 
     @Provides
@@ -88,8 +93,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideIssuesRepository(issueRepository: IssueRepository): com.stefware.myapplication.ui.issues.IssueRepository {
-        return com.stefware.myapplication.ui.issues.IssueRepository(issueRepository)
+    fun provideIssuesRepository(issueRepository: DataIssueRepository): UiIssueRepository {
+        return UiIssueRepository(issueRepository)
     }
 
     @Provides

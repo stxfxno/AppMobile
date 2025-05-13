@@ -11,9 +11,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stefware.myapplication.data.model.History
 import com.stefware.myapplication.data.model.Issue
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IssueDetailScreen(
     issueId: Int,
@@ -40,8 +41,7 @@ fun IssueDetailScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            // Deberías importar los íconos de Material adecuados
-                            imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
+                            imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
                         )
                     }

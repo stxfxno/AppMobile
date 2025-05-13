@@ -2,12 +2,14 @@ package com.stefware.myapplication.ui.meetings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.stefware.myapplication.data.model.Meeting
 
 @Composable
 fun MeetingManagementScreen(
@@ -36,8 +38,7 @@ fun MeetingManagementScreen(
             )
         } else {
             LazyColumn {
-                items(meetings.size) { index ->
-                    val meeting = meetings[index]
+                items(meetings) { meeting ->
                     MeetingCard(
                         meeting = meeting,
                         onEdit = { viewModel.openEditMeetingDialog(meeting) },
@@ -103,34 +104,4 @@ fun MeetingCard(
             }
         }
     }
-}
-
-@Composable
-fun MeetingDialog(
-    meeting: Meeting?,
-    onDismiss: () -> Unit,
-    onSave: (Meeting) -> Unit
-) {
-    // Implementa este diálogo para agregar/editar reuniones
-    // Similar a IssueDialog o UserStoryDialog
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(if (meeting?.id == 0) "Add New Meeting" else "Edit Meeting") },
-        text = {
-            // Formulario para meeting
-            Column {
-                // Campos de texto para los datos
-            }
-        },
-        confirmButton = {
-            Button(onClick = { /* onSave(meeting) */ }) {
-                Text("Save")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    )
 }
