@@ -1,4 +1,4 @@
-package com.stefware.myapplication.ui.statics
+package com.stefware.myapplication.ui.statistics
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -11,6 +11,8 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.stefware.myapplication.ui.statics.SprintStatistics
+import com.stefware.myapplication.ui.statics.StatisticsViewModel
 
 @Composable
 fun StatisticsScreen(
@@ -97,9 +99,6 @@ fun StatisticsScreen(
                             .fillMaxWidth()
                             .padding(vertical = 4.dp)
                     ) {
-                        // Member icon or avatar
-                        // ...
-
                         Column(modifier = Modifier.padding(start = 8.dp)) {
                             Text(text = member.fullName)
                             Text(text = member.role)

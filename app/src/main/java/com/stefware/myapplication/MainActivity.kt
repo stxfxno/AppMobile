@@ -1,4 +1,3 @@
-// MainActivity.kt
 package com.stefware.myapplication
 
 import android.os.Bundle
@@ -8,7 +7,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.navigation.compose.rememberNavController
 import com.stefware.myapplication.ui.navigation.NavigationGraph
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.text.Typography.dagger
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

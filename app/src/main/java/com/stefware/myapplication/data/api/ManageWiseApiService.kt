@@ -1,6 +1,6 @@
 package com.stefware.myapplication.data.api
 
-import com.google.android.gms.gcm.Task
+import com.stefware.myapplication.data.model.Task
 import com.stefware.myapplication.data.model.Issue
 import com.stefware.myapplication.data.model.Member
 import com.stefware.myapplication.data.model.Sprint

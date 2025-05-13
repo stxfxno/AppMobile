@@ -1,8 +1,7 @@
 package com.stefware.myapplication.data.repository
 
-
-import com.google.android.gms.gcm.Task
 import com.stefware.myapplication.data.api.ManageWiseApiService
+import com.stefware.myapplication.data.model.Task
 import com.stefware.myapplication.data.model.UserStory
 import javax.inject.Inject
 
@@ -29,5 +28,3 @@ class UserStoryRepository @Inject constructor(
         return apiService.addTask(userStoryId, task)
     }
 }
-
-// Similar repositories for Sprint, Issue, Member, etc.

@@ -1,9 +1,9 @@
-// app/src/main/java/com/stefware/myapplication/ui/statistics/StatisticsViewModel.kt
 package com.stefware.myapplication.ui.statics
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stefware.myapplication.data.model.Member
+import com.stefware.myapplication.data.repository.StatisticsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

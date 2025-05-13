@@ -1,7 +1,5 @@
 package com.stefware.myapplication
 
-import kotlin.text.Typography.dagger
-
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
